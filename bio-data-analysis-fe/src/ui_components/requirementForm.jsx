@@ -339,6 +339,7 @@ const RequirementForm = () => {
                   <SelectContent>
                     <SelectItem value="high_school">High School</SelectItem>
                     <SelectItem value="diploma">Diploma</SelectItem>
+                    <SelectItem value="graduation">Graduation</SelectItem>
                     <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
                     <SelectItem value="masters">Master's Degree</SelectItem>
                     <SelectItem value="phd">PhD</SelectItem>
@@ -347,45 +348,7 @@ const RequirementForm = () => {
                 </Select>
               </div>
 
-              {/* Experience Before Joining Field */}
-              <div className="space-y-2">
-                <Label htmlFor="experienceBeforeJoining" className="text-gray-700 dark:text-gray-300">Experience Before Joining (Years)</Label>
-                <Input
-                  id="experienceBeforeJoining"
-                  name="experienceBeforeJoining"
-                  type="number"
-                  value={formData.experienceBeforeJoining}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
-              {/* Experience In Company Field */}
-              <div className="space-y-2">
-                <Label htmlFor="experienceInCompany" className="text-gray-700 dark:text-gray-300">Experience In Company (Years)</Label>
-                <Input
-                  id="experienceInCompany"
-                  name="experienceInCompany"
-                  type="number"
-                  value={formData.experienceInCompany}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
-              {/* Position in Other Organization Field */}
-              <div className="space-y-2">
-                <Label htmlFor="positionInOtherOrg" className="text-gray-700 dark:text-gray-300">Position in Other Organization</Label>
-                <Input
-                  id="positionInOtherOrg"
-                  name="positionInOtherOrg"
-                  value={formData.positionInOtherOrg}
-                  onChange={handleChange}
-                  placeholder="Enter previous positions"
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
+              
               {/* Department Field */}
               <div className="space-y-2">
                 <Label htmlFor="department" className="text-gray-700 dark:text-gray-300">Department</Label>
@@ -398,63 +361,7 @@ const RequirementForm = () => {
                 />
               </div>
 
-              {/* Location Field */}
-              <div className="space-y-2">
-                <Label htmlFor="location" className="text-gray-700 dark:text-gray-300">Location</Label>
-                <Input
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-              {/* Qualification Details */}
-              <div className="space-y-2">
-                <Label htmlFor="qualificationSubject" className="text-gray-700 dark:text-gray-300">Qualification Subject</Label>
-                <Input
-                  id="qualificationSubject"
-                  name="qualificationSubject"
-                  value={formData.qualificationSubject}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="qualificationYear" className="text-gray-700 dark:text-gray-300">Qualification Year</Label>
-                <Input
-                  id="qualificationYear"
-                  name="qualificationYear"
-                  type="number"
-                  value={formData.qualificationYear}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="qualificationDuration" className="text-gray-700 dark:text-gray-300">Qualification Duration</Label>
-                <Input
-                  id="qualificationDuration"
-                  name="qualificationDuration"
-                  value={formData.qualificationDuration}
-                  onChange={handleChange}
-                  placeholder="e.g., 4 years"
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="qualificationInstitute" className="text-gray-700 dark:text-gray-300">Qualification Institute</Label>
-                <Input
-                  id="qualificationInstitute"
-                  name="qualificationInstitute"
-                  value={formData.qualificationInstitute}
-                  onChange={handleChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
+              
             </div>
             {/* Custom Prompt Field */}
             <div className="space-y-2 col-span-2">
