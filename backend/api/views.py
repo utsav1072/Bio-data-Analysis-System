@@ -8,6 +8,7 @@ from rest_framework import status
 from django.http import FileResponse, Http404
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import partial
+import re
 
 # LangChain imports
 from langchain_community.document_loaders import PyPDFLoader
@@ -37,16 +38,48 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         docs = loader.load()
         content_str = "\n".join(doc.page_content for doc in docs)
 
-        print(content_str)
-
         # Initialize Ollama LLM via LangChain
         llm = OllamaLLM(model=MODEL_NAME)
 
         # Process extra prompt if provided
         extra_prompt_flag = True
         if extra_prompt:
-            prompt = (
+            if MODEL_NAME == 'phi4':
+                prompt = (
                 "You are an expert at analyzing employee bio-data documents for BHEL.\n"
+                "All bio-data documents follow the exact structure outlined below:\n"
+                "\n"
+                "BIO-DATA STRUCTURE:\n"
+                "Fields:\n"
+                "- name\n"
+                "- date of birth\n"
+                "- staff no.\n"
+                "- division\n"
+                "- designation\n"
+                "- department\n"
+                "- present grade\n"
+                "- place of posting\n"
+                "- date of grade\n"
+                "- posting w.e.f\n"
+                "- category\n"
+                "- employee group\n"
+                "- pwd status\n"
+                "\n"
+                "Table: qualification\n"
+                "  - Information for each qualification level (e.g., diploma, graduation)\n"
+                "\n"
+                "Table: experience before joining BHEL\n"
+                "  - Employer name, date from, date to\n"
+                "\n"
+                "Table: experience in BHEL\n"
+                "  - Grade, designation/level, date from, date to, designation\n"
+                "\n"
+                "Table: experience in BHEL - location and division detail\n"
+                "  - Location and division for each grade and designation/level\n"
+                "\n"
+                "Table: Position to other Organization (Outside BHEL)\n"
+                "  - Name of organization, location, part/full time\n"
+                "\n"
                 "Given a specific condition (which may include reference information such as today's date), determine if the document provides sufficient direct or strictly inferred evidence to satisfy the condition.\n"
                 "If the condition requires information not explicitly present (e.g., age), calculate it only if all necessary data (such as date of birth and the reference date provided in the condition) are present within the document and/or the condition.\n\n"
                 f"Condition: {extra_prompt}\n"
@@ -56,17 +89,66 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 "- Answer 'YES' only if the document, using direct or strictly inferred information, satisfies the condition.\n"
                 "- If any required information is missing, unclear, or cannot be inferred without assumption, answer 'NO'.\n"
                 "- Respond with only 'YES' or 'NO'. Do not include any explanations or extra text."
-            )
-
+                )
+            elif MODEL_NAME == 'mistral':
+                prompt = (
+                "You are an expert at analyzing employee bio-data documents for BHEL.\n"
+                "All bio-data documents follow the exact structure outlined below:\n"
+                "\n"
+                "BIO-DATA STRUCTURE:\n"
+                "Fields:\n"
+                "- name\n"
+                "- date of birth\n"
+                "- staff no.\n"
+                "- division\n"
+                "- designation\n"
+                "- department\n"
+                "- present grade\n"
+                "- place of posting\n"
+                "- date of grade\n"
+                "- posting w.e.f\n"
+                "- category\n"
+                "- employee group\n"
+                "- pwd status\n"
+                "\n"
+                "Table: qualification\n"
+                "  - Information for each qualification level (e.g., diploma, graduation)\n"
+                "\n"
+                "Table: experience before joining BHEL\n"
+                "  - Employer name, date from, date to\n"
+                "\n"
+                "Table: experience in BHEL\n"
+                "  - Grade, designation/level, date from, date to, designation\n"
+                "\n"
+                "Table: experience in BHEL - location and division detail\n"
+                "  - Location and division for each grade and designation/level\n"
+                "\n"
+                "Table: Position to other Organization (Outside BHEL)\n"
+                "  - Name of organization, location, part/full time\n"
+                "\n"
+                "Given a specific condition (which may include reference information such as today's date), determine if the document provides sufficient direct or strictly inferred evidence to satisfy the condition.\n"
+                "If the condition requires information not explicitly present (e.g., age), calculate it only if all necessary data (such as date of birth and the reference date provided in the condition) are present within the document and/or the condition.\n\n"
+                f"Condition: {extra_prompt}\n"
+                f"Document:\n{content_str}\n\n"
+                "Instructions:\n"
+                "- Use only the information from the document and the condition. Do NOT use any external knowledge or make assumptions.\n"
+                "- Answer 'YES' only if the document, using direct or strictly inferred information, satisfies the condition.\n"
+                "- If any required information is missing, unclear, or cannot be inferred without assumption, answer 'NO'.\n"
+                "- Respond with only 'YES' or 'NO'. Do not include any explanations or extra text."
+                )
             response_text = llm.invoke(prompt).strip().upper()
-            extra_prompt_flag = (response_text != 'NO')
+            extra_prompt_flag = not ('NO' in response_text)
             print(response_text)
 
-
+        # If extra_prompt check failed, return early
         if not extra_prompt_flag:
             return None, file_path
 
-        # Key-value extraction prompt
+        # If criteria is empty, return filename since extra_prompt check passed
+        if not criteria:
+            return filename, file_path
+
+        # Process criteria if it's not empty
         prompt = f"""
         You are an expert at extracting structured data from employee bio-data documents for BHEL.
 
@@ -78,6 +160,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         PWD status: NA
         category: SC
         employee Group: Superviser
+        qualification level: graduate
 
         <REQUIRED KEYS>
         {json.dumps(list(criteria.keys()), indent=2)}
@@ -94,6 +177,9 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         """
 
         llm_response = llm.invoke(prompt).strip()
+        if llm_response.startswith("```"):
+            llm_response = re.sub(r"```(?:json)?\n?|```", "", llm_response).strip()
+        print(llm_response)
         try:
             extracted_data = json.loads(llm_response)
             extracted_data = {k.lower(): str(v).lower() for k, v in extracted_data.items()}
@@ -121,6 +207,7 @@ class PDFProcessView(APIView):
         files = request.FILES.getlist('files')
         description = request.data.get('description', '')
         extra_prompt = request.data.get('extra_prompt', '')
+        model_name = request.data.get('model_name','')
 
         if not files:
             return Response({"error": "No files uploaded"}, status=status.HTTP_400_BAD_REQUEST)
@@ -135,7 +222,7 @@ class PDFProcessView(APIView):
             return Response({"error": f"Invalid criteria format: {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        MODEL_NAME = "mistral"
+        MODEL_NAME = model_name
         matching_files = []
         file_paths = []
 

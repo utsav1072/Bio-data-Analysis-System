@@ -49,12 +49,14 @@ const RequirementForm = () => {
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState('');
   const [pdfUrls, setPdfUrls] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [customPrompt, setCustomPrompt] = useState('');
+  const [selectedModel, setSelectedModel] = useState('mistral');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,11 +97,26 @@ const RequirementForm = () => {
       return;
     }
 
-    setSelectedFiles(files);
+    setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+  };
+
+  const handleRemoveFile = (indexToRemove) => {
+    setSelectedFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Check if at least one field is filled or custom prompt exists
+    const hasAtLeastOneField = Object.values(formData).some(value => value !== '');
+    const hasCustomPrompt = customPrompt.trim() !== '';
+    
+    if (!hasAtLeastOneField && !hasCustomPrompt) {
+      setError('Please fill at least one field in the form or provide a custom prompt');
+      setIsErrorDialogOpen(true);
+      return;
+    }
+    
     setIsDialogOpen(true);
   };
 
@@ -119,6 +136,9 @@ const RequirementForm = () => {
     if (customPrompt) {
       formDataObj.append('extra_prompt', customPrompt);
     }
+
+    // Append selected model
+    formDataObj.append('model_name', selectedModel);
   
     // Append each selected file
     for (let i = 0; i < selectedFiles.length; i++) {
@@ -339,7 +359,7 @@ const RequirementForm = () => {
                   <SelectContent>
                     <SelectItem value="high_school">High School</SelectItem>
                     <SelectItem value="diploma">Diploma</SelectItem>
-                    <SelectItem value="graduation">Graduation</SelectItem>
+                    <SelectItem value="graduate">Graduation</SelectItem>
                     <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
                     <SelectItem value="masters">Master's Degree</SelectItem>
                     <SelectItem value="phd">PhD</SelectItem>
@@ -374,6 +394,24 @@ const RequirementForm = () => {
                 placeholder="Enter any additional criteria or conditions to check in the documents..."
                 className="w-full min-h-[100px] p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
               />
+            </div>
+
+            {/* Model Selection Field */}
+            <div className="space-y-2 col-span-2">
+              <Label htmlFor="model" className="text-gray-700 dark:text-gray-300">Select LLM Model</Label>
+              <Select
+                value={selectedModel}
+                onValueChange={setSelectedModel}
+                className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select model" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mistral">Mistral - Fast but may include some false matches</SelectItem>
+                  <SelectItem value="phi4">Phi-4 - More accurate but slower processing</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex justify-center pt-6">
@@ -423,9 +461,32 @@ const RequirementForm = () => {
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Selected files:</p>
                 <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
                   {selectedFiles.map((file, index) => (
-                    <li key={index} className="flex items-center space-x-2">
-                      <FileText className="w-4 h-4" />
-                      <span>{file.name} ({(file.size / 1024).toFixed(2)} KB)</span>
+                    <li key={index} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="w-4 h-4" />
+                        <span>{file.name} ({(file.size / 1024).toFixed(2)} KB)</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveFile(index)}
+                        className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </Button>
                     </li>
                   ))}
                 </ul>
@@ -455,6 +516,26 @@ const RequirementForm = () => {
               ) : (
                 'Upload'
               )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Error Dialog */}
+      <Dialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900 dark:text-gray-100">Validation Error</DialogTitle>
+            <DialogDescription className="text-gray-500 dark:text-gray-400">
+              {error}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => setIsErrorDialogOpen(false)}
+              className="bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white"
+            >
+              OK
             </Button>
           </div>
         </DialogContent>
