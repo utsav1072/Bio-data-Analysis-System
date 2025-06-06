@@ -35,11 +35,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         # LangChain PDF loading and chunking
         loader = PyPDFLoader(file_path)
         docs = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        chunks = []
-        for doc in docs:
-            chunks.extend(text_splitter.split_text(doc.page_content))
-        content_str = "\n".join(chunks)
+        content_str = "\n".join(doc.page_content for doc in docs)
 
         print(content_str)
 
@@ -91,7 +87,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         7. Respond with only and only json, no other sentence or word other than the json itself
         """
         llm_response = llm.invoke(prompt).strip()
-        #print(llm_response)
+        print(llm_response)
         try:
             extracted_data = json.loads(llm_response)
             extracted_data = {k.lower(): str(v).lower() for k, v in extracted_data.items()}
