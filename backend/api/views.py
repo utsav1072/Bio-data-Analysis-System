@@ -46,15 +46,18 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         extra_prompt_flag = True
         if extra_prompt:
             prompt = (
-                f"You are given a document and a condition to check.\n"
-                f"First, analyze the document and extract or infer any information required to evaluate the condition. "
-                f"For example, if the condition is about 'age' but the document only contains 'date of birth', "
-                f"calculate the age based on the date of birth and the current date.\n\n"
+                "You are an expert at analyzing employee bio-data documents for BHEL.\n"
+                "Given a specific condition (which may include reference information such as today's date), determine if the document provides sufficient direct or strictly inferred evidence to satisfy the condition.\n"
+                "If the condition requires information not explicitly present (e.g., age), calculate it only if all necessary data (such as date of birth and the reference date provided in the condition) are present within the document and/or the condition.\n\n"
                 f"Condition: {extra_prompt}\n"
-                f"Document: {content_str}\n\n"
-                "Only answer 'YES' if the document, using direct or inferred information, satisfies the condition. "
-                "Otherwise, answer 'NO'. Do not provide explanations or any other text—only reply with 'YES' or 'NO'."
+                f"Document:\n{content_str}\n\n"
+                "Instructions:\n"
+                "- Use only the information from the document and the condition. Do NOT use any external knowledge or make assumptions.\n"
+                "- Answer 'YES' only if the document, using direct or strictly inferred information, satisfies the condition.\n"
+                "- If any required information is missing, unclear, or cannot be inferred without assumption, answer 'NO'.\n"
+                "- Respond with only 'YES' or 'NO'. Do not include any explanations or extra text."
             )
+
             response_text = llm.invoke(prompt).strip().upper()
             extra_prompt_flag = (response_text != 'NO')
             print(response_text)
@@ -65,35 +68,40 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
 
         # Key-value extraction prompt
         prompt = f"""
-        KEY-VALUE EXTRACTION PROTOCOL
+        You are an expert at extracting structured data from employee bio-data documents for BHEL.
 
-        REQUIRED KEYS:
+        <BIO-DATA EXAMPLE>
+        Name: Mr Suresh Kumar
+        Date of Birth: 12-05-1980
+        Department: Mechanical
+        Designation: Senior Engineer
+        PWD status: NA
+        category: SC
+        employee Group: Superviser
+
+        <REQUIRED KEYS>
         {json.dumps(list(criteria.keys()), indent=2)}
 
-        DOCUMENT CONTENT:
-        {content_str}
+        <INSTRUCTIONS>
+        - Extract only the exact values present in the document for each key.
+        - Do not infer or guess any information.
+        - If a key is missing, omit it from the output or set its value to null.
+        - Output must be a single valid JSON object with only the required keys.
+        - Do not include any explanation or extra text.
 
-        INSTRUCTIONS:
-        1. Find EXACT matches for required keys (case-insensitive)
-        2. Extract ONLY values explicitly associated with keys
-        3. Output JSON with format:
-        {{
-        "key1": "exact_value_from_doc",
-        "key2": "exact_value_from_doc"
-        }}
-        4. Include ONLY keys found in document
-        5. NO INFERENCE - exact matches only
-        6. NO COMMENTS - output ONLY valid JSON
-        7. Respond with only and only json, no other sentence or word other than the json itself
+        <ACTUAL BIO-DATA>
+        {content_str}
         """
+
         llm_response = llm.invoke(prompt).strip()
-        print(llm_response)
         try:
             extracted_data = json.loads(llm_response)
             extracted_data = {k.lower(): str(v).lower() for k, v in extracted_data.items()}
             criteria_lower = {k.lower(): str(v).lower() for k, v in criteria.items()}
+            print(extracted_data)
+            print(criteria_lower)
             match = all(
-                k in extracted_data and criteria_lower[k] in extracted_data[k]
+                k in extracted_data and (criteria_lower[k] in extracted_data[k] or extracted_data[k] in criteria_lower[k])
                 for k in criteria_lower
             )
             if match:
