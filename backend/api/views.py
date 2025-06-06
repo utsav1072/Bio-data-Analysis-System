@@ -131,7 +131,7 @@ class PDFProcessView(APIView):
             return Response({"error": f"Invalid criteria format: {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        MODEL_NAME = "llama3"
+        MODEL_NAME = "mistral"
         matching_files = []
         file_paths = []
 
