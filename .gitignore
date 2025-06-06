@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+*.log
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Node.js / Frontend
+bio-data-analysis-fe/node_modules/
+bio-data-analysis-fe/.env
+bio-data-analysis-fe/.env.local
+bio-data-analysis-fe/.env.development.local
+bio-data-analysis-fe/.env.test.local
+bio-data-analysis-fe/.env.production.local
+bio-data-analysis-fe/npm-debug.log*
+bio-data-analysis-fe/yarn-debug.log*
+bio-data-analysis-fe/yarn-error.log*
+bio-data-analysis-fe/build/
+bio-data-analysis-fe/dist/
+bio-data-analysis-fe/.next/
+bio-data-analysis-fe/coverage/
+bio-data-analysis-fe/.cache/
+bio-data-analysis-fe/.vite/
+
+# Database
+*.sqlite3
+*.db
+
+# Local development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Django
+backend/media/
+backend/static/
+backend/*/migrations/*.py
+!backend/*/migrations/__init__.py
+backend/*/migrations/*.pyc
+backend/*/migrations/*.pyo
+backend/*/migrations/*.pyd
+backend/*/migrations/*.so
+backend/*/migrations/*.dylib
+backend/*/migrations/*.dll
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover 
