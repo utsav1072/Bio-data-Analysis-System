@@ -45,7 +45,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         extra_prompt_flag = True
         if extra_prompt:
             if MODEL_NAME == 'phi4':
-                prompt = (
+                 prompt = (
                 "You are an expert at analyzing employee bio-data documents for BHEL.\n"
                 "All bio-data documents follow the exact structure outlined below:\n"
                 "\n"
@@ -86,9 +86,14 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 f"Document:\n{content_str}\n\n"
                 "Instructions:\n"
                 "- Use only the information from the document and the condition. Do NOT use any external knowledge or make assumptions.\n"
-                "- Answer 'YES' only if the document, using direct or strictly inferred information, satisfies the condition.\n"
+                "- Answer ONLY with 'YES' or 'NO'—no explanations, no reasoning, and no extra text.\n"
+                "- Do NOT include any justification, reasoning, or additional information.\n"
                 "- If any required information is missing, unclear, or cannot be inferred without assumption, answer 'NO'.\n"
-                "- Respond with only 'YES' or 'NO'. Do not include any explanations or extra text."
+                "- Example of correct response: YES\n"
+                "- Example of incorrect response: YES, because the date of birth is present.\n"
+                "- Any response other than a single 'YES' or 'NO' is incorrect.\n"
+                "\n"
+                "Strictly output only 'YES' or 'NO'. Any other output is invalid."
                 )
             elif MODEL_NAME == 'mistral':
                 prompt = (
