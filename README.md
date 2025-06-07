@@ -71,20 +71,40 @@ cd bio-data-analysis-fe
 npm install
 ```
 
-2. Start the development server:
+2. Install Desktop App dependencies:
 ```bash
-npm run dev
+cd desktop-app
+npm install
 ```
+
+### 5. Starting the Application
+
+#### Quick Start (Windows)
+After completing all setup steps, you can use the provided batch file to start the frontend and desktop app:
+```bash
+# Double click start-app.bat or run from terminal
+.\start-app.bat
+```
+
+Note: Make sure the backend server and Ollama are running before using the application.
+
+#### Manual Start
+1. Ensure Ollama is running with the required models
+2. Ensure the backend server is running (http://localhost:8000)
+3. Start the frontend:
+   ```bash
+   cd bio-data-analysis-fe
+   npm run dev
+   ```
+4. Start the desktop app:
+   ```bash
+   cd desktop-app
+   npm run dev
+   ```
 
 ## Usage Guide
 
-### 1. Starting the Application
-
-1. Ensure Ollama is running with the required models
-2. Start the backend server (runs on http://localhost:8000)
-3. Start the frontend server (runs on http://localhost:5173)
-
-### 2. Using the Application
+### 1. Using the Application
 
 1. **Upload Bio-data**
    - Click the upload button to select PDF files
@@ -113,7 +133,7 @@ npm run dev
    - Wait for the analysis to complete
    - View and download matching documents
 
-### 3. Understanding Results
+### 2. Understanding Results
 
 - Matching documents will be displayed in a list
 - Each document can be:
@@ -136,6 +156,7 @@ BHEL/
 │   │   ├── context/      # React context
 │   │   └── App.jsx       # Main application
 │   └── package.json
+├── desktop-app/          # Electron desktop application
 └── README.md
 ```
 
@@ -152,6 +173,11 @@ BHEL/
 - TailwindCSS for styling
 - Framer Motion for animations
 - Modern UI components
+
+### Desktop App (Electron)
+- Cross-platform desktop application
+- Integrated with the web frontend
+- Native system integration
 
 ## Troubleshooting
 
@@ -171,6 +197,12 @@ BHEL/
    - Check backend logs
    - Verify model availability
    - Ensure sufficient system resources
+
+4. **Application Start Issues**
+   - Ensure backend server is running
+   - Verify Ollama is running
+   - Check if all dependencies are installed
+   - Ensure virtual environment is activated
 
 ## Contributing
 
