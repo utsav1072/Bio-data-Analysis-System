@@ -1,0 +1,52 @@
+{
+  "name": "bio-data-analysis-desktop",
+  "version": "1.0.0",
+  "description": "Desktop application for Bio Data Analysis",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "cross-env": "^7.0.3"
+  },
+  "build": {
+    "appId": "com.bhel.biodata",
+    "productName": "Bio Data Analysis",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "**/*",
+      "!../bio-data-analysis-fe/node_modules/**/*",
+      "!../backend/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../bio-data-analysis-fe/dist",
+        "to": "frontend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../backend",
+        "to": "backend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../venv",
+        "to": "venv",
+        "filter": ["**/*"]
+      }
+    ]
+  }
+}
