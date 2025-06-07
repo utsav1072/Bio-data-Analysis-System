@@ -39,6 +39,22 @@ bio-data-analysis-fe/coverage/
 bio-data-analysis-fe/.cache/
 bio-data-analysis-fe/.vite/
 
+desktop-app/node_modules/
+desktop-app/.env
+desktop-app/.env.local
+desktop-app/.env.development.local
+desktop-app/.env.test.local
+desktop-app/.env.production.local
+desktop-app/npm-debug.log*
+desktop-app/yarn-debug.log*
+desktop-app/yarn-error.log*
+desktop-app/build/
+desktop-app/dist/
+desktop-app/.next/
+desktop-app/coverage/
+desktop-app/.cache/
+desktop-app/.vite/
+
 # Database
 *.sqlite3
 *.db
