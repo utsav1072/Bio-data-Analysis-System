@@ -4,7 +4,7 @@
   "description": "Desktop application for Bio Data Analysis",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --no-sandbox",
     "dev": "cross-env NODE_ENV=development electron .",
     "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
