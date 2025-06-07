@@ -1,4 +1,4 @@
-# BHEL Bio-data Analysis System
+# Bio-data Analysis System
 
 An intelligent document analysis system that automates the screening and matching of employee bio-data against specific criteria using Retrieval-Augmented Generation (RAG) and Large Language Models.
 
@@ -155,7 +155,7 @@ BHEL/
 └── README.md
 ```
 
-## Technical Details
+## TechStack
 
 ### Backend (Django)
 - Django REST Framework for API endpoints
