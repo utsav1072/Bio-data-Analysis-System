@@ -14,7 +14,7 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone [your-repository-url]
+git clone https://github.com/utsav1072/Retrieval-Augmented-Generation-RAG-?tab=readme-ov-file
 cd BHEL
 ```
 
@@ -172,18 +172,4 @@ BHEL/
    - Verify model availability
    - Ensure sufficient system resources
 
-## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-[Your chosen license]
-
-## Support
-
-For support, please [contact details or issue tracker link] 
