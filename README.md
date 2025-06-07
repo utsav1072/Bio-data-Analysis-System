@@ -15,7 +15,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/utsav1072/Retrieval-Augmented-Generation-RAG-?tab=readme-ov-file
-cd BHEL
+cd <project_folder>
 ```
 
 ### 2. Set Up Ollama and Models
@@ -56,11 +56,6 @@ pip install -r requirements.txt
 3. Run database migrations:
 ```bash
 python manage.py migrate
-```
-
-4. Start the backend server:
-```bash
-python manage.py runserver
 ```
 
 ### 4. Frontend Setup
