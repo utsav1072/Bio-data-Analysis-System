@@ -200,26 +200,44 @@ const RequirementForm = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="container mx-auto py-8 px-4"
+      className="container mx-auto py-8 px-4 relative overflow-hidden"
     >
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Floating circles */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl animate-float-delayed"></div>
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        
+        {/* Accent lines */}
+        <div className="absolute top-0 left-1/4 w-px h-32 bg-gradient-to-b from-blue-500/0 via-blue-500/50 to-blue-500/0"></div>
+        <div className="absolute bottom-0 right-1/4 w-px h-32 bg-gradient-to-t from-purple-500/0 via-purple-500/50 to-purple-500/0"></div>
+      </div>
+
       <motion.div
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 100 }}
       >
-        <Card className="max-w-4xl mx-auto bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-slate-900/50">
-          <CardHeader className="border-b border-gray-200 dark:border-slate-700">
+        <Card className="max-w-6xl mx-auto bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-slate-900/50 relative">
+          {/* Card accent elements */}
+          <div className="absolute -top-1 -left-1 w-20 h-20 bg-gradient-to-br from-blue-500/20 to-transparent rounded-tl-lg"></div>
+          <div className="absolute -bottom-1 -right-1 w-20 h-20 bg-gradient-to-tl from-purple-500/20 to-transparent rounded-br-lg"></div>
+          
+          <CardHeader className="border-b border-gray-200 dark:border-slate-700 px-8 py-6 relative">
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <CardTitle className="text-2xl font-bold text-center text-gray-900 dark:text-slate-100">
-                Employee Bio Data Form
+              <CardTitle className="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 tracking-tight">
+                Employee Bio-Data Analysis
               </CardTitle>
             </motion.div>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-8 px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <motion.div 
                 variants={containerVariants}
@@ -432,13 +450,13 @@ const RequirementForm = () => {
                 transition={{ delay: 0.5 }}
                 className="space-y-2 col-span-2"
               >
-                <Label htmlFor="customPrompt" className="text-gray-700 dark:text-slate-300">Custom Prompt</Label>
+                <Label htmlFor="customPrompt" className="text-gray-700 dark:text-slate-300">Additional Search Criteria</Label>
                 <textarea
                   id="customPrompt"
                   name="customPrompt"
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="Enter any additional criteria or conditions to check in the documents..."
+                  placeholder="Specify any additional criteria or conditions for document analysis..."
                   className="w-full min-h-[100px] p-2 rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
                 />
               </motion.div>
@@ -450,18 +468,18 @@ const RequirementForm = () => {
                 transition={{ delay: 0.6 }}
                 className="space-y-2 col-span-2"
               >
-                <Label htmlFor="model" className="text-gray-700 dark:text-slate-300">Select LLM Model</Label>
+                <Label htmlFor="model" className="text-gray-700 dark:text-slate-300">Analysis Model Selection</Label>
                 <Select
                   value={selectedModel}
                   onValueChange={setSelectedModel}
                   className="bg-white dark:bg-slate-900 border-gray-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400 text-gray-900 dark:text-slate-100"
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select model" />
+                    <SelectValue placeholder="Select analysis model" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mistral">Mistral - Fast but may include some false matches</SelectItem>
-                    <SelectItem value="phi4">Phi-4 - More accurate but slower processing</SelectItem>
+                    <SelectItem value="mistral">Mistral - High-speed analysis with balanced accuracy</SelectItem>
+                    <SelectItem value="phi4">Phi-4 - Comprehensive analysis with enhanced precision</SelectItem>
                   </SelectContent>
                 </Select>
               </motion.div>
@@ -493,15 +511,15 @@ const RequirementForm = () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
           <DialogHeader>
-            <DialogTitle className="text-gray-900 dark:text-slate-100">Upload Files</DialogTitle>
+            <DialogTitle className="text-gray-900 dark:text-slate-100">Document Upload</DialogTitle>
             <DialogDescription className="text-gray-600 dark:text-slate-400">
-              Please upload your PDF files for analysis.
+              Please upload the relevant PDF documents for analysis.
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="files" className="text-gray-700 dark:text-slate-300">Select PDF Files</Label>
+              <Label htmlFor="files" className="text-gray-700 dark:text-slate-300">Select Documents</Label>
               <Input
                 id="files"
                 type="file"
@@ -521,7 +539,7 @@ const RequirementForm = () => {
 
             {selectedFiles.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700 dark:text-slate-300">Selected files:</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-slate-300">Selected documents:</p>
                 <ul className="text-sm text-gray-500 dark:text-slate-400 space-y-1">
                   {selectedFiles.map((file, index) => (
                     <li key={index} className="flex items-center justify-between">
@@ -574,10 +592,10 @@ const RequirementForm = () => {
               {isUploading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
+                  Processing...
                 </>
               ) : (
-                'Upload'
+                'Analyze Documents'
               )}
             </Button>
           </div>
@@ -603,6 +621,24 @@ const RequirementForm = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 6s ease-in-out infinite;
+          animation-delay: -3s;
+        }
+      `}</style>
     </motion.div>
   );
 };

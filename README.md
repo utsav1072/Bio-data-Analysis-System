@@ -1,6 +1,6 @@
-# BHEL Bio-data Analysis System
+# Bio-data Analysis System
 
-An intelligent document analysis system that automates the screening and matching of employee bio-data against specific criteria using Retrieval-Augmented Generation (RAG) and Large Language Models.
+An intelligent document analysis system that automates the screening and matching of employee bio-data against specific criteria using Retrieval-Augmented Generation (RAG) and Large Language Models(LLM).
 
 ## Prerequisites
 
@@ -101,12 +101,7 @@ Note: Make sure the backend server and Ollama are running before using the appli
 
 ### 1. Using the Application
 
-1. **Upload Bio-data**
-   - Click the upload button to select PDF files
-   - Supported format: PDF only
-   - Maximum file size: 1MB per file
-
-2. **Set Search Criteria**
+1. **Set Search Criteria**
    - Fill in the relevant fields in the form:
      - Name
      - Staff Number
@@ -118,16 +113,28 @@ Note: Make sure the backend server and Ollama are running before using the appli
      - And other relevant fields
    - Or use the custom prompt field for specific requirements
 
-3. **Select Model**
+     ![Filling all the relevant Fields in the form](images/Form_fields.png)
+
+2. **Select Model**
    - Choose between:
      - Mistral: Faster processing, good for quick screening
      - Phi-4: More accurate, better for detailed analysis
 
+     ![Selecting which model to use for Matching/Analysis](images/Model_selection.png)
+
+3. **Upload Bio-data**
+   - Click the submit button to select PDF files
+   - Supported format: PDF only
+   - Maximum file size: 1MB per file
+
+   ![Selecting all the employee's bio-data for Matching/Analysis](images/Choose_all_employee_bio_data_to_analyze.png)
+
+
 4. **Process Documents**
-   - Click "Submit" to start processing
+   - Click "Analyze Documents" to start processing
    - Wait for the analysis to complete
    - View and download matching documents
-
+   
 ### 2. Understanding Results
 
 - Matching documents will be displayed in a list
@@ -135,6 +142,8 @@ Note: Make sure the backend server and Ollama are running before using the appli
   - Downloaded individually
   - Downloaded as part of a ZIP archive
   - Viewed in the browser
+  
+![Downloaded individually/Downloaded as part of a ZIP archive/View in browser](images/download_retreived_documents.png)
 
 ## Project Structure
 
@@ -155,7 +164,7 @@ BHEL/
 └── README.md
 ```
 
-## Technical Details
+## TechStack
 
 ### Backend (Django)
 - Django REST Framework for API endpoints

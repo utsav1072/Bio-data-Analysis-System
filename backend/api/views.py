@@ -57,7 +57,9 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 "you will only answer in 'YES' or 'NO' strictly do not repond with any word or sentence other than 'YES' or 'NO'\n"
                 f"<BIO-DATA start>\n{content_str}\n<BIO-DATA end>\n\n"
                 f"<criteria start> : {extra_prompt} : <criteria end>\n\n"
-                "NOTE: only and only answer in 'YES' or 'NO' strictly('YES' if condition is true 'NO' otherwise) do not repond with any word or sentence other than 'YES' or 'NO' and one sentence justification"
+                "<INSTRUCTIONS> \n"
+                "- Do not infer or guess any information.\n"
+                "-only and only answer in 'YES' or 'NO' strictly('YES' if condition is true 'NO' otherwise) do not repond with any word or sentence other than 'YES' or 'NO' and one sentence justification"
                 )
             elif MODEL_NAME == 'mistral':
                 prompt = (
@@ -67,7 +69,9 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 "you will only answer in 'YES' or 'NO' strictly do not repond with any word or sentence other than 'YES' or 'NO'\n"
                 f"<BIO-DATA start>\n{content_str}\n<BIO-DATA end>\n\n"
                 f"<criteria start> : {extra_prompt} : <criteria end>\n\n"
-                "NOTE: only and only answer in 'YES' or 'NO' strictly('YES' if condition is true 'NO' otherwise) do not repond with any word or sentence other than 'YES' or 'NO' and one sentence justification"
+                "<INSTRUCTIONS> \n"
+                "- Do not infer or guess any information.\n"
+                "-only and only answer in 'YES' or 'NO' strictly('YES' if condition is true 'NO' otherwise) do not repond with any word or sentence other than 'YES' or 'NO' and one sentence justification"
                 )
             response_text = llm.invoke(prompt).strip().upper()
             extra_prompt_flag = not ('NO' in response_text)

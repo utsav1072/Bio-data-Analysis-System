@@ -92,7 +92,7 @@ const Results = ({ pdfUrls }) => {
             transition={{ delay: 0.3 }}
             className="text-slate-500 dark:text-slate-400 text-lg"
           >
-            No PDFs available to download.
+            No matching documents found.
           </motion.p>
         </motion.div>
       </motion.div>
@@ -124,7 +124,7 @@ const Results = ({ pdfUrls }) => {
         transition={{ type: "spring", stiffness: 100 }}
         className="text-3xl font-bold text-center mb-8 text-slate-900 dark:text-slate-100"
       >
-        Download Shorlisted Bio-data
+        Matching Employee Documents
       </motion.h1>
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
@@ -172,7 +172,7 @@ const Results = ({ pdfUrls }) => {
                         className="flex items-center"
                       >
                         <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
-                        Downloaded
+                        Retrieved
                       </motion.div>
                     ) : (
                       <motion.div
@@ -181,7 +181,7 @@ const Results = ({ pdfUrls }) => {
                         className="flex items-center"
                       >
                         <Download className="w-4 h-4 mr-2" />
-                        Download
+                        Retrieve Document
                       </motion.div>
                     )}
                   </motion.a>
@@ -214,12 +214,12 @@ const Results = ({ pdfUrls }) => {
               {isDownloading ? (
                 <>
                   <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                  Downloading...
+                  Processing Documents...
                 </>
               ) : (
                 <>
                   <Download className="w-5 h-5 mr-2" />
-                  Download All as ZIP
+                  Download All Documents
                 </>
               )}
             </span>
