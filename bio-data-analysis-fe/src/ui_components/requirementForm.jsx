@@ -509,7 +509,7 @@ const RequirementForm = () => {
 
       {/* File Upload Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
+        <DialogContent className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-slate-100">Document Upload</DialogTitle>
             <DialogDescription className="text-gray-600 dark:text-slate-400">
@@ -517,7 +517,7 @@ const RequirementForm = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4 py-4 overflow-y-auto flex-1">
             <div className="space-y-2">
               <Label htmlFor="files" className="text-gray-700 dark:text-slate-300">Select Documents</Label>
               <Input
@@ -575,7 +575,7 @@ const RequirementForm = () => {
             )}
           </div>
 
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
             <Button 
               variant="outline" 
               onClick={() => setIsDialogOpen(false)}

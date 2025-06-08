@@ -195,9 +195,14 @@ class PDFProcessView(APIView):
             ]
         }, status=status.HTTP_200_OK)
 
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 class PDFDownloadView(APIView):
+    @xframe_options_exempt
     def get(self, request, filename):
         file_path = os.path.join(settings.MEDIA_ROOT, 'pdfs', filename)
         if os.path.exists(file_path):
-            return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=filename)
+            # Use ?download=true for download, otherwise preview inline
+            download = request.query_params.get('download', 'false').lower() == 'true'
+            return FileResponse(open(file_path, 'rb'), as_attachment=download, filename=filename)
         raise Http404("PDF not found")
