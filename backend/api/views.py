@@ -206,3 +206,12 @@ class PDFDownloadView(APIView):
             download = request.query_params.get('download', 'false').lower() == 'true'
             return FileResponse(open(file_path, 'rb'), as_attachment=download, filename=filename)
         raise Http404("PDF not found")
+
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({
+            "status": "healthy",
+            "message": "API is up and running"
+        }, status=status.HTTP_200_OK)
+

@@ -7,6 +7,7 @@
     "start": "electron . --no-sandbox",
     "dev": "cross-env NODE_ENV=development electron .",
     "build": "electron-builder",
+    "build:win": "electron-builder --win",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,12 +25,23 @@
       "output": "dist"
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
     },
     "files": [
       "**/*",
       "!../bio-data-analysis-fe/node_modules/**/*",
-      "!../backend/**/*"
+      "!../backend/**/*",
+      "!../venv/**/*"
     ],
     "extraResources": [
       {
@@ -43,10 +55,31 @@
         "filter": ["**/*"]
       },
       {
-        "from": "../venv",
-        "to": "venv",
+        "from": "../backend/dist/biodata_backend.exe",
+        "to": "backend/biodata_backend.exe",
         "filter": ["**/*"]
       }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Bio Data Analysis",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "menuCategory": "Bio Data Analysis",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}.${ext}"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/**/*",
+      "**/venv/**/*",
+      "**/frontend/**/*"
     ]
   }
 }
