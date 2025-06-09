@@ -14,9 +14,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "electron": "^28.1.0",
-    "electron-builder": "^24.9.1",
-    "cross-env": "^7.0.3"
+    "electron-builder": "^24.9.1"
   },
   "build": {
     "appId": "com.bhel.biodata",
@@ -28,11 +28,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icon.ico"
@@ -47,17 +51,23 @@
       {
         "from": "../bio-data-analysis-fe/dist",
         "to": "frontend",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "../backend",
         "to": "backend",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "../backend/dist/biodata_backend.exe",
         "to": "backend/biodata_backend.exe",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "nsis": {
@@ -81,5 +91,8 @@
       "**/venv/**/*",
       "**/frontend/**/*"
     ]
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.2"
   }
 }

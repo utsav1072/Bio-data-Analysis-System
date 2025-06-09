@@ -3,6 +3,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const isDev = process.env.NODE_ENV === 'development';
+const kill = require('tree-kill');
 
 let mainWindow;
 let djangoProcess;
@@ -137,7 +138,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         if (djangoProcess) {
-            djangoProcess.kill();
+            kill(djangoProcess.pid); 
         }
         app.quit();
     }
@@ -145,6 +146,6 @@ app.on('window-all-closed', function () {
 
 app.on('before-quit', () => {
     if (djangoProcess) {
-        djangoProcess.kill();
+        kill(djangoProcess.pid);
     }
 });
