@@ -12,12 +12,11 @@ Before you begin, ensure you have the following installed:
 
 ## Windows Application Installation
 
-You can install the Windows application directly from the repository:
+You can install the Windows application directly from the Given Drive Link:
 
-1. Navigate to the root directory of the repository
-2. Find the Windows installer `Bio Data Analysis-Setup-1.0.0.exe`
-3. Double-click the installer to begin the installation process
-4. Follow the installation wizard instructions
+1. [Download link](https://drive.google.com/file/d/1Y5WkW1g9O2y5qBEdTAj-fFq9CC8fjDl4/view?usp=sharing)
+2. After Download Double-click the installer to begin the installation process
+3. Follow the installation wizard instructions
 
 **Important Note:** Before using the application, make sure you have:
 - Ollama installed on your system
@@ -34,7 +33,7 @@ ollama pull mistral
 ollama pull phi4
 ```
 
-## Installation Steps
+## Manual Installation Steps
 
 ### 1. Clone the Repository
 ```bash
@@ -109,8 +108,8 @@ Note: Make sure the backend server and Ollama are running before using the appli
 
 #### Manual Start
 1. Ensure Ollama is running with the required models
-2. Ensure the backend server is running (http://localhost:8000)
-3. Start the frontend:
+2. Ensure the backend server is running (http://localhost:8000/)
+3. Start the frontend web application (http://localhost:5173/):
    ```bash
    cd bio-data-analysis-fe
    npm run dev
