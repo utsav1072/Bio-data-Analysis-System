@@ -10,6 +10,30 @@ Before you begin, ensure you have the following installed:
 - Git
 - Ollama (for LLM models)
 
+## Windows Application Installation
+
+You can install the Windows application directly from the repository:
+
+1. Navigate to the root directory of the repository
+2. Find the Windows installer `Bio Data Analysis-Setup-1.0.0.exe`
+3. Double-click the installer to begin the installation process
+4. Follow the installation wizard instructions
+
+**Important Note:** Before using the application, make sure you have:
+- Ollama installed on your system
+- Required models pulled in Ollama (Mistral and Phi-4)
+- Ollama service running in the background
+
+To verify Ollama setup:
+```bash
+# Check if Ollama is running
+ollama list
+
+# If models are missing, pull them
+ollama pull mistral
+ollama pull phi4
+```
+
 ## Installation Steps
 
 ### 1. Clone the Repository
