@@ -228,7 +228,6 @@ BHEL/
 1. **Ollama Connection Error**
    - Ensure Ollama service is running
    - Check if models are properly pulled
-   - Verify network connectivity
 
 2. **File Upload Issues**
 
