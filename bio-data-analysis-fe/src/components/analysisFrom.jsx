@@ -134,7 +134,7 @@ const AnalyzeForm = () => {
   ]
 
   if (showResults) {
-    return <Results pdfUrls={pdfUrls} />;
+    return <Results pdfUrls={pdfUrls} />
   }
 
   return (
@@ -157,7 +157,13 @@ const AnalyzeForm = () => {
                 {selectedFiles.map((file, idx) => (
                   <li key={idx} className="flex justify-between items-center text-white/90 bg-white/10 rounded p-2 mb-1">
                     {file.name} ({(file.size / 1024).toFixed(2)} KB)
-                    <button type="button" onClick={() => handleRemoveFile(idx)} className="text-red-400 hover:text-red-600 ml-2 font-bold">Remove</button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(idx)}
+                      className="text-red-400 hover:text-red-600 ml-2 font-bold"
+                    >
+                      Remove
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -174,10 +180,36 @@ const AnalyzeForm = () => {
               <button
                 type="button"
                 onClick={handleUpload}
-                className="px-6 py-2 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold shadow-xl hover:scale-105 transition-transform duration-200"
+                className="px-6 py-2 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold shadow-xl hover:scale-105 transition-transform duration-200 flex items-center justify-center"
                 disabled={isUploading}
               >
-                {isUploading ? 'Processing...' : 'Analyze Documents'}
+                {isUploading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  'Analyze Documents'
+                )}
               </button>
             </div>
           </div>

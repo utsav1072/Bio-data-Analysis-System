@@ -58,10 +58,17 @@ const App = () => {
   if (error) {
     return (
       <div className={bgClass}>
-        <div className="flex flex-col items-center bg-white/20 backdrop-blur-lg rounded-3xl shadow-2xl p-8 w-full max-w-md border border-white/30">
-          <span className="text-red-200 text-2xl font-bold mb-4">Error</span>
-          <span className="text-gray-100 text-base text-center">{error}</span>
-        </div>
+      <div className="flex flex-col items-center bg-white/20 backdrop-blur-lg rounded-3xl shadow-2xl p-8 w-full max-w-md border border-white/30">
+        <span className="text-red-200 text-2xl font-bold mb-4">Error</span>
+        <span className="text-gray-100 text-base text-center">{error}</span>
+        <a
+        href="/"
+        className="mt-6 inline-block px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-400"
+        style={{ textDecoration: 'none' }}
+        >
+        Retry
+        </a>
+      </div>
       </div>
     )
   }
