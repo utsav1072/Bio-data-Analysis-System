@@ -6,7 +6,6 @@ const AnalyzeForm = () => {
   const [form, setForm] = useState({
     name: '',
     staffNo: '',
-    education: '',
     designation: '',
     presentGrade: '',
     dateOfGrade: '',
@@ -119,7 +118,6 @@ const AnalyzeForm = () => {
   const fields = [
     { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Full Name' },
     { name: 'staffNo', label: 'Staff No.', type: 'text', placeholder: 'Staff Number' },
-    { name: 'education', label: 'Education', type: 'text', placeholder: 'Education' },
     { name: 'designation', label: 'Designation', type: 'text', placeholder: 'Designation' },
     { name: 'presentGrade', label: 'Present Grade', type: 'text', placeholder: 'Present Grade' },
     { name: 'dateOfGrade', label: 'Date of Grade', type: 'date' },

@@ -122,7 +122,9 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
             extracted_data = json.loads(llm_response)
             extracted_data = {k.lower(): str(v).lower() for k, v in extracted_data.items()}
             criteria_lower = {k.lower(): str(v).lower() for k, v in criteria.items()}
-            ## print(extracted_data)
+            ## print(extracted_data['dateofbirth'])
+            if 'dateofbirth' in extracted_data:
+                extracted_data['dateofbirth'] = extracted_data['dateofbirth'].replace('-', '.')
             ## print(criteria_lower)
             match = all(
                 k in extracted_data and (criteria_lower[k] in extracted_data[k] or extracted_data[k] in criteria_lower[k])
