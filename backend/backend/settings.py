@@ -128,6 +128,16 @@ REST_FRAMEWORK = {
     ]
 }
 
+OLLAMA_INSTANCES = [
+    "http://localhost:11434",
+    "http://localhost:11435", 
+    "http://localhost:11436"
+]
+
+# Performance settings based on search results
+OLLAMA_NUM_PARALLEL = int(os.environ.get('OLLAMA_NUM_PARALLEL', 4))
+OLLAMA_MAX_LOADED_MODELS = int(os.environ.get('OLLAMA_MAX_LOADED_MODELS', 4))
+OLLAMA_MAX_QUEUE = int(os.environ.get('OLLAMA_MAX_QUEUE', 512))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -1,0 +1,47 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  ollama1:
+    image: ollama/ollama:latest
+    container_name: ollama1
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama1_data:/root/.ollama
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=4
+      - OLLAMA_MAX_QUEUE=512
+    restart: unless-stopped
+
+  ollama2:
+    image: ollama/ollama:latest
+    container_name: ollama2
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama2_data:/root/.ollama
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=4
+      - OLLAMA_MAX_QUEUE=512
+    restart: unless-stopped
+
+  ollama3:
+    image: ollama/ollama:latest
+    container_name: ollama3
+    ports:
+      - "11436:11434"
+    volumes:
+      - ollama3_data:/root/.ollama
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=4
+      - OLLAMA_MAX_QUEUE=512
+    restart: unless-stopped
+
+volumes:
+  ollama1_data:
+  ollama2_data:
+  ollama3_data:

@@ -1,6 +1,7 @@
 import os
 import threading
 import json
+import itertools
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -26,7 +27,7 @@ def delete_files(file_paths):
         if os.path.exists(path):
             os.remove(path)
 
-def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
+def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME, ollama_url):
     filename = file.name
     file_path = os.path.join(settings.MEDIA_ROOT, 'pdfs', filename)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -41,16 +42,19 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         loader = PyPDFLoader(file_path)
         docs = loader.load()
         content_str = "\n".join(doc.page_content for doc in docs)
-        # print(content_str)
 
-        # Initialize Ollama LLM via LangChain
-        llm = OllamaLLM(model=MODEL_NAME)
+        # Initialize Ollama LLM with specific instance URL
+        llm = OllamaLLM(
+            model=MODEL_NAME,
+            base_url=ollama_url,
+            temperature=0.1
+        )
 
         # Process extra prompt if provided
         extra_prompt_flag = True
         if extra_prompt:
             if MODEL_NAME == 'phi4':
-                 prompt = (
+                prompt = (
                 "you are a strict bio-data analyzer for BHEL\n"
                 "all bio-data follow exact same structure\n"
                 "i will provide you with a bio data and a criteria\n"
@@ -61,6 +65,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 "- Do not infer or guess any information.\n"
                 "-only and only answer in 'YES' or 'NO' strictly('YES' if condition is true 'NO' otherwise) do not repond with any word or sentence other than 'YES' or 'NO' and one sentence justification"
                 )
+                print(prompt)  
             elif MODEL_NAME == 'mistral':
                 prompt = (
                 "you are a strict bio-data analyzer for BHEL\n"
@@ -75,8 +80,7 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
                 )
             response_text = llm.invoke(prompt).strip().upper()
             extra_prompt_flag = not ('NO' in response_text)
-            print(response_text)
-            ## print(prompt)
+            print(f"Extra prompt response from {ollama_url}: {response_text}")
 
         # If extra_prompt check failed, return early
         if not extra_prompt_flag:
@@ -117,32 +121,48 @@ def process_single_pdf(file, criteria, extra_prompt, MODEL_NAME):
         llm_response = llm.invoke(prompt).strip()
         if llm_response.startswith("```"):
             llm_response = re.sub(r"```(?:json)?\n?|```", "", llm_response).strip()
-        ## print(llm_response)
+        
         try:
             extracted_data = json.loads(llm_response)
             extracted_data = {k.lower(): str(v).lower() for k, v in extracted_data.items()}
             criteria_lower = {k.lower(): str(v).lower() for k, v in criteria.items()}
-            ## print(extracted_data['dateofbirth'])
+            
             if 'dateofbirth' in extracted_data:
                 extracted_data['dateofbirth'] = extracted_data['dateofbirth'].replace('-', '.')
-            ## print(criteria_lower)
+            
             match = all(
                 k in extracted_data and (criteria_lower[k] in extracted_data[k] or extracted_data[k] in criteria_lower[k])
                 for k in criteria_lower
             )
             if match:
+                print(f"Match found by {ollama_url}: {filename}")
                 return filename, file_path
         except (json.JSONDecodeError, Exception) as e:
-            print(f"Error processing {filename}: {str(e)[:200]}")
+            print(f"Error processing {filename} on {ollama_url}: {str(e)[:200]}")
             return None, file_path
 
     except Exception as e:
-        print(f"Error processing {filename}: {str(e)[:200]}")
+        print(f"Error processing {filename} on {ollama_url}: {str(e)[:200]}")
         return None, file_path
 
     return None, file_path
 
 class PDFProcessView(APIView):
+    def __init__(self):
+        super().__init__()
+        # Define your Ollama instances
+        self.ollama_instances = [
+            "http://localhost:11434",
+            "http://localhost:11435", 
+            "http://localhost:11436"
+        ]
+        # Create a round-robin iterator
+        self.instance_cycle = itertools.cycle(self.ollama_instances)
+        
+    def get_next_ollama_instance(self):
+        """Get the next Ollama instance in round-robin fashion"""
+        return next(self.instance_cycle)
+    
     def post(self, request, format=None):
         files = request.FILES.getlist('files')
         description = request.data.get('description', '')
@@ -166,21 +186,27 @@ class PDFProcessView(APIView):
         matching_files = []
         file_paths = []
 
-        # Parallel processing with ThreadPoolExecutor
+        # Parallel processing with ThreadPoolExecutor and load balancing
         with ThreadPoolExecutor(max_workers=min(len(files), 4)) as executor:
-            process_func = partial(
-                process_single_pdf,
-                criteria=criteria,
-                extra_prompt=extra_prompt,
-                MODEL_NAME=MODEL_NAME
-            )
-            future_to_file = {executor.submit(process_func, file): file for file in files}
+            future_to_file = {}
+            for file in files:
+                # Get next available Ollama instance
+                ollama_url = self.get_next_ollama_instance()
+                future = executor.submit(
+                    process_single_pdf,
+                    file, criteria, extra_prompt, MODEL_NAME, ollama_url
+                )
+                future_to_file[future] = file
+            
             for future in as_completed(future_to_file):
-                filename, file_path = future.result()
-                if filename:
-                    matching_files.append(filename)
-                if file_path:
-                    file_paths.append(file_path)
+                try:
+                    filename, file_path = future.result()
+                    if filename:
+                        matching_files.append(filename)
+                    if file_path:
+                        file_paths.append(file_path)
+                except Exception as e:
+                    print(f"Error processing file: {e}")
 
         threading.Thread(
             target=delete_files,
@@ -194,7 +220,10 @@ class PDFProcessView(APIView):
                     "filename": fname,
                     "url": request.build_absolute_uri(f'/api/download/{fname}/')
                 } for fname in matching_files
-            ]
+            ],
+            "processed_files": len(files),
+            "matching_files": len(matching_files),
+            "ollama_instances_used": self.ollama_instances
         }, status=status.HTTP_200_OK)
 
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -209,11 +238,14 @@ class PDFDownloadView(APIView):
             return FileResponse(open(file_path, 'rb'), as_attachment=download, filename=filename)
         raise Http404("PDF not found")
 
-
 class HealthCheckView(APIView):
     def get(self, request):
         return Response({
             "status": "healthy",
-            "message": "API is up and running"
+            "message": "API is up and running",
+            "ollama_instances": [
+                "http://localhost:11434",
+                "http://localhost:11435", 
+                "http://localhost:11436"
+            ]
         }, status=status.HTTP_200_OK)
-
